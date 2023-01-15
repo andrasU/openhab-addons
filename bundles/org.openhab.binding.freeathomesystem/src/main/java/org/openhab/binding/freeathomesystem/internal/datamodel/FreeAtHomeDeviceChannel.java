@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2023 Contributors to the openHAB project
+ * Copyright (c) 2010-2022 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -258,6 +258,74 @@ public class FreeAtHomeDeviceChannel {
 
                 break;
             }
+            case FID_BRIGHTNESS_SENSOR: {
+                this.channelId = channelId;
+
+                logger.info("Shutter actuator channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1026, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1027, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_RAIN_SENSOR: {
+                this.channelId = channelId;
+
+                logger.info("Shutter actuator channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 39, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1029, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1030, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_TEMPERATURE_SENSOR: {
+                this.channelId = channelId;
+
+                logger.info("Shutter actuator channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 38, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1024, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_WIND_SENSOR: {
+                this.channelId = channelId;
+
+                logger.info("Shutter actuator channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 37, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1025, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1028, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
             default: {
                 logger.info("Unknown channel found - Channel FID: {}", channelFunctionID);
 
@@ -296,5 +364,11 @@ public class FreeAtHomeDeviceChannel {
 
     public FreeAtHomeDatapointGroup getDatapointGroup(int idx) {
         return datapointGroups.get(idx);
+    }
+
+    public void applyChangesForVirtualDevice() {
+        for (FreeAtHomeDatapointGroup localDatapointGroup : datapointGroups) {
+            localDatapointGroup.applyChangesForVirtualDevice();
+        }
     }
 }

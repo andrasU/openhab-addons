@@ -518,6 +518,11 @@
     </dependency>
     <dependency>
       <groupId>org.openhab.addons.bundles</groupId>
+      <artifactId>org.openhab.binding.freeathomesystem</artifactId>
+      <version>3.4.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.addons.bundles</groupId>
       <artifactId>org.openhab.binding.freebox</artifactId>
       <version>${project.version}</version>
     </dependency>

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2023 Contributors to the openHAB project
+ * Copyright (c) 2010-2022 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -95,6 +95,26 @@ public class FreeAtHomeDatapointGroup {
         }
 
         return true;
+    }
+
+    public void applyChangesForVirtualDevice() {
+        // The input and output datapoints are ment from the device point of view. Because the virtual dvices are
+        // outside of the free@home system the input and output datapoint must be switched
+
+        FreeAtHomeDatapoint localDatapoint = inputDatapoint;
+
+        inputDatapoint = outputDatapoint;
+        outputDatapoint = localDatapoint;
+
+        // if the datapoint was a ouput only, the inout part must be added here
+        if (outputDatapoint == null) {
+            outputDatapoint = inputDatapoint;
+        }
+
+        // Only input or output is not possible, therefore patch the direction also
+        datapointGroupDirection = DATAPOINTGROUP_DIRECTION_INPUTOUTPUT;
+
+        return;
     }
 
     public FreeAtHomeDatapoint getInputDatapoint() {
