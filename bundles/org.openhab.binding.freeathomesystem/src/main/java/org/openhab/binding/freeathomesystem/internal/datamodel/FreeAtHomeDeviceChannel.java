@@ -261,7 +261,7 @@ public class FreeAtHomeDeviceChannel {
             case FID_BRIGHTNESS_SENSOR: {
                 this.channelId = channelId;
 
-                logger.info("Shutter actuator channel - Channel FID: {}", channelFunctionID);
+                logger.info("Brightnes sensor channel - Channel FID: {}", channelFunctionID);
 
                 FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
                 newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1026, channelId, channelObject);
@@ -276,7 +276,7 @@ public class FreeAtHomeDeviceChannel {
             case FID_RAIN_SENSOR: {
                 this.channelId = channelId;
 
-                logger.info("Shutter actuator channel - Channel FID: {}", channelFunctionID);
+                logger.info("Rain sensor channel - Channel FID: {}", channelFunctionID);
 
                 FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
                 newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 39, channelId, channelObject);
@@ -295,7 +295,7 @@ public class FreeAtHomeDeviceChannel {
             case FID_TEMPERATURE_SENSOR: {
                 this.channelId = channelId;
 
-                logger.info("Shutter actuator channel - Channel FID: {}", channelFunctionID);
+                logger.info("Temperature sensor channel - Channel FID: {}", channelFunctionID);
 
                 FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
                 newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 38, channelId, channelObject);
@@ -310,7 +310,7 @@ public class FreeAtHomeDeviceChannel {
             case FID_WIND_SENSOR: {
                 this.channelId = channelId;
 
-                logger.info("Shutter actuator channel - Channel FID: {}", channelFunctionID);
+                logger.info("Wind sensor channel - Channel FID: {}", channelFunctionID);
 
                 FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
                 newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 37, channelId, channelObject);

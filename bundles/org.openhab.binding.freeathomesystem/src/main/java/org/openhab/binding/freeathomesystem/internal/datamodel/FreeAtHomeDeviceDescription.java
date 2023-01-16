@@ -133,6 +133,10 @@ public class FreeAtHomeDeviceDescription {
         return sceneIsDetected;
     }
 
+    public boolean isVirtual() {
+        return (interfaceType == DEVICE_INTERFACE_VIRTUAL_TYPE) ? true : false;
+    }
+
     public int getNumberOfChannels() {
         return listOfChannels.size();
     }

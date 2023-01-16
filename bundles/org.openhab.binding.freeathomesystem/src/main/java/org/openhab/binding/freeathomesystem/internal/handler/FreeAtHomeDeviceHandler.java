@@ -126,9 +126,16 @@ public class FreeAtHomeDeviceHandler extends FreeAtHomeSystemBaseHandler {
 
         if (command instanceof RefreshType) {
             FreeAtHomeDatapointGroup dpg = mapChannelUID.get(channelUID);
+            String valueStr = "0";
 
-            String valueStr = freeAtHomeBridge.getDatapoint(deviceID, dpg.getOutputDatapoint().channelId,
-                    dpg.getOutputDatapoint().getDatapointId());
+            // Check whether it is a INPUT only datapoint group
+            if (dpg.getDirection() == FreeAtHomeDatapointGroup.DATAPOINTGROUP_DIRECTION_INPUT) {
+                valueStr = freeAtHomeBridge.getDatapoint(deviceID, dpg.getInputDatapoint().channelId,
+                        dpg.getInputDatapoint().getDatapointId());
+            } else {
+                valueStr = freeAtHomeBridge.getDatapoint(deviceID, dpg.getOutputDatapoint().channelId,
+                        dpg.getOutputDatapoint().getDatapointId());
+            }
 
             ValueStateConverter vsc = dpg.getValueStateConverter();
 
@@ -171,8 +178,48 @@ public class FreeAtHomeDeviceHandler extends FreeAtHomeSystemBaseHandler {
             });
         }
 
-        logger.debug("Handle command switch {} - at channel {} - full command {}", deviceID, channelUID.getAsString(),
-                command.toFullString());
+        logger.debug("Handle command for device {} - at channel {} - full command {}", deviceID,
+                channelUID.getAsString(), command.toFullString());
+    }
+
+    public void handleEventBasedUpdate(ChannelUID channelUID, State state) {
+        this.updateState(channelUID, state);
+    }
+
+    public void feedbackForVirtualDevice(ChannelUID channelUID, String valueString) {
+        FreeAtHomeBridgeHandler freeAtHomeBridge = null;
+
+        FreeAtHomeDatapointGroup dpg = mapChannelUID.get(channelUID);
+
+        Bridge bridge = this.getBridge();
+
+        if (bridge != null) {
+            ThingHandler handler = bridge.getHandler();
+
+            if (handler instanceof FreeAtHomeBridgeHandler) {
+                freeAtHomeBridge = (FreeAtHomeBridgeHandler) handler;
+            }
+        }
+
+        if (freeAtHomeBridge != null) {
+            updateStatus(ThingStatus.ONLINE);
+        } else {
+            updateStatus(ThingStatus.OFFLINE);
+            return;
+        }
+
+        if ((dpg.getDirection() == FreeAtHomeDatapointGroup.DATAPOINTGROUP_DIRECTION_INPUT)
+                || (dpg.getDirection() == FreeAtHomeDatapointGroup.DATAPOINTGROUP_DIRECTION_INPUTOUTPUT)) {
+            freeAtHomeBridge.setDatapoint(deviceID, dpg.getInputDatapoint().channelId,
+                    dpg.getInputDatapoint().getDatapointId(), valueString);
+
+            logger.debug("Handle feedback for virtual device {} - at channel {} - value {}", deviceID,
+                    channelUID.getAsString(), valueString);
+
+        } else {
+            logger.debug("Handle feedback for virtual device {} - at channel {} - but only ubout DPG", deviceID,
+                    channelUID.getAsString());
+        }
     }
 
     public ChannelTypeUID createChannelTypeForDatapointgroup(FreeAtHomeDatapointGroup dpg,
@@ -406,5 +453,9 @@ public class FreeAtHomeDeviceHandler extends FreeAtHomeSystemBaseHandler {
         }
 
         mapChannelUID.clear();
+    }
+
+    public boolean isThingHandlesVirtualDevice() {
+        return device.isVirtual();
     }
 }

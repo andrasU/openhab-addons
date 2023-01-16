@@ -100,19 +100,24 @@ public class FreeAtHomeDatapointGroup {
     public void applyChangesForVirtualDevice() {
         // The input and output datapoints are ment from the device point of view. Because the virtual dvices are
         // outside of the free@home system the input and output datapoint must be switched
-
         FreeAtHomeDatapoint localDatapoint = inputDatapoint;
 
         inputDatapoint = outputDatapoint;
         outputDatapoint = localDatapoint;
 
-        // if the datapoint was a ouput only, the inout part must be added here
-        if (outputDatapoint == null) {
-            outputDatapoint = inputDatapoint;
+        if (inputDatapoint != null && outputDatapoint != null) {
+            datapointGroupDirection = DATAPOINTGROUP_DIRECTION_INPUTOUTPUT;
+        } else {
+            if (inputDatapoint == null && outputDatapoint != null) {
+                datapointGroupDirection = DATAPOINTGROUP_DIRECTION_OUTPUT;
+            } else {
+                if (inputDatapoint != null && outputDatapoint == null) {
+                    datapointGroupDirection = DATAPOINTGROUP_DIRECTION_INPUT;
+                } else {
+                    datapointGroupDirection = DATAPOINTGROUP_DIRECTION_UNDEFINED;
+                }
+            }
         }
-
-        // Only input or output is not possible, therefore patch the direction also
-        datapointGroupDirection = DATAPOINTGROUP_DIRECTION_INPUTOUTPUT;
 
         return;
     }

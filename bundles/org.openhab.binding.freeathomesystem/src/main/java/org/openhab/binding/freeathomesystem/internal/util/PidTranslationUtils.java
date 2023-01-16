@@ -81,7 +81,7 @@ public class PidTranslationUtils {
                 "Absolute Set Value", "Absolute control of the set value"));
         mapDescObj.put("0x0012", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
                 "Night", "Toggle between day and night (where day = 0 / night = 1)"));
-        mapDescObj.put("0x0013", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_ENUM, CATEGORY_UNDEFINED, "", "",
+        mapDescObj.put("0x0013", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
                 "invalid string id", "Resets load failures / short circuits / etc"));
         mapDescObj.put("0x0015", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_UNKNOWN, CATEGORY_UNDEFINED, "", "",
                 "RGB color", "RGB Color coded in three bytes"));
@@ -111,7 +111,7 @@ public class PidTranslationUtils {
                 "Rain Alarm", "State of the rain sensor (sent cyclically and on COV)"));
         mapDescObj.put("0x0028", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_BOOLEAN, CATEGORY_UNDEFINED, "", "",
                 "Force-position blind", "Forces value dependent high priority up or down state"));
-        mapDescObj.put("0x0029", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_ENUM, CATEGORY_UNDEFINED, "", "",
+        mapDescObj.put("0x0029", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
                 "Window/Door position", "Delivers position for Window/Door (Open / Tilted / Closed)"));
         mapDescObj.put("0x0030", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
                 "Actuating Value Heating", "Determines the through flow volume of the control valve"));
@@ -123,7 +123,7 @@ public class PidTranslationUtils {
                 "30", "Set Value Temperature", "Defines the displayed set point temperature of the system"));
         mapDescObj.put("0x0034", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_DECIMAL, CATEGORY_TEMPERATURE, "7",
                 "30", "Relative Set Point Temperature", "Defines the relative set point temperature of the system"));
-        mapDescObj.put("0x0035", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_ENUM, CATEGORY_UNDEFINED, "", "",
+        mapDescObj.put("0x0035", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
                 "Window/Door", "Open = 1 / closed = 0"));
         mapDescObj.put("0x0036", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_TEMPERATURE, "",
                 "", "Status indication", "states: on/off heating/cooling; eco/comfort; frost/not frost"));
