@@ -39,6 +39,7 @@ import io.github.hapjava.characteristics.impl.common.IdentifierCharacteristic;
 import io.github.hapjava.characteristics.impl.common.IsConfiguredCharacteristic;
 import io.github.hapjava.characteristics.impl.common.IsConfiguredEnum;
 import io.github.hapjava.characteristics.impl.common.NameCharacteristic;
+import io.github.hapjava.characteristics.impl.common.ServiceLabelIndexCharacteristic;
 import io.github.hapjava.characteristics.impl.heatercooler.CurrentHeaterCoolerStateCharacteristic;
 import io.github.hapjava.characteristics.impl.heatercooler.CurrentHeaterCoolerStateEnum;
 import io.github.hapjava.characteristics.impl.heatercooler.TargetHeaterCoolerStateCharacteristic;
@@ -72,7 +73,7 @@ public class HomekitMetadataCharacteristicFactory {
     private static final Logger logger = LoggerFactory.getLogger(HomekitMetadataCharacteristicFactory.class);
 
     // List of optional characteristics that can be set via metadata, and the corresponding method to create them.
-    private final static Map<HomekitCharacteristicType, Function<Object, Characteristic>> optional = new HashMap<>() {
+    private static final Map<HomekitCharacteristicType, Function<Object, Characteristic>> optional = new HashMap<>() {
         {
             put(ACTIVE_IDENTIFIER, HomekitMetadataCharacteristicFactory::createActiveIdentifierCharacteristic);
             put(ACTIVE_STATUS, HomekitMetadataCharacteristicFactory::createActiveStatusCharacteristic);
@@ -90,6 +91,7 @@ public class HomekitMetadataCharacteristicFactory {
             put(INPUT_SOURCE_TYPE, HomekitMetadataCharacteristicFactory::createInputSourceTypeCharacteristic);
             put(NAME, HomekitMetadataCharacteristicFactory::createNameCharacteristic);
             put(PICTURE_MODE, HomekitMetadataCharacteristicFactory::createPictureModeCharacteristic);
+            put(SERVICE_INDEX, HomekitMetadataCharacteristicFactory::createServiceIndexCharacteristic);
             put(SLEEP_DISCOVERY_MODE, HomekitMetadataCharacteristicFactory::createSleepDiscoveryModeCharacteristic);
             put(TARGET_HEATER_COOLER_STATE,
                     HomekitMetadataCharacteristicFactory::createTargetHeaterCoolerStateCharacteristic);
@@ -101,8 +103,9 @@ public class HomekitMetadataCharacteristicFactory {
 
     public static Optional<Characteristic> createCharacteristic(String characteristic, Object value) {
         var type = HomekitCharacteristicType.valueOfTag(characteristic);
-        if (type.isEmpty() || !optional.containsKey(type.get()))
+        if (type.isEmpty() || !optional.containsKey(type.get())) {
             return Optional.empty();
+        }
         return Optional.of(optional.get(type.get()).apply(value));
     }
 
@@ -246,6 +249,10 @@ public class HomekitMetadataCharacteristicFactory {
         }, v -> {
         }, () -> {
         });
+    }
+
+    private static Characteristic createServiceIndexCharacteristic(Object value) {
+        return new ServiceLabelIndexCharacteristic(getInteger(value));
     }
 
     private static Characteristic createSleepDiscoveryModeCharacteristic(Object value) {
