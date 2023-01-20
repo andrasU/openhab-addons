@@ -90,6 +90,28 @@ public class FreeAtHomeDeviceChannel {
 
                 break;
             }
+            case FID_MOVEMENT_DETECTOR: {
+                this.channelId = channelId;
+
+                logger.info("Movement detector channel found - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 6, channelId, channelObject);
+
+                datapointGroups.add(newDatapointGroup);
+
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 7, channelId, channelObject);
+
+                datapointGroups.add(newDatapointGroup);
+
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1027, channelId, channelObject);
+
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
             case FID_ROOM_TEMPERATURE_CONTROLLER_MASTER_WITHOUT_FAN:
             case FID_RADIATOR_ACTUATOR_MASTER: {
                 this.channelId = channelId;

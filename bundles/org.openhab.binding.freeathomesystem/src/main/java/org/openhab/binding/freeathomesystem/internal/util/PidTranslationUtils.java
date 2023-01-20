@@ -69,10 +69,10 @@ public class PidTranslationUtils {
         mapDescObj.put("0x0004", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_BOOLEAN, CATEGORY_SWITCH, "", "",
                 "Scene Control", "Recall or learn the set value related to encoded scene number"));
         mapDescObj.put("0x0006",
-                createFreeAtHomePairingIdTranslation(PID_VALUETYPE_BOOLEAN, CATEGORY_UNDEFINED, "", "",
+                createFreeAtHomePairingIdTranslation(PID_VALUETYPE_BOOLEAN, CATEGORY_MOTION, "", "",
                         "Movement under consideration of brightness",
                         "Activation of an autonomous switch off function triggered by an movement detector"));
-        mapDescObj.put("0x0007", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_BOOLEAN, CATEGORY_UNDEFINED, "", "",
+        mapDescObj.put("0x0007", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_BOOLEAN, CATEGORY_MOTION, "", "",
                 "Presence",
                 "Announces presence triggered by an movement detector to be used by e.g. RTCs. Is independent of brightness and can be used for alerts e.g."));
         mapDescObj.put("0x0010", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
@@ -295,7 +295,7 @@ public class PidTranslationUtils {
                 "Wind force", "Wind force"));
         mapDescObj.put("0x0402", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_BOOLEAN, CATEGORY_UNDEFINED, "", "",
                 "Brightness alarm", "Brightness alarm"));
-        mapDescObj.put("0x0403", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
+        mapDescObj.put("0x0403", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_DECIMAL, CATEGORY_UNDEFINED, "", "",
                 "Lux value", "Weatherstation brightness level"));
         mapDescObj.put("0x0404", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_DECIMAL, CATEGORY_WIND, "", "",
                 "Wind speed", "Wind speed"));
