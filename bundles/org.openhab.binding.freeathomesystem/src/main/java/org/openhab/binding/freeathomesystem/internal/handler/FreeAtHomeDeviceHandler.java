@@ -35,6 +35,7 @@ import org.openhab.core.thing.Channel;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.ThingUID;
 import org.openhab.core.thing.binding.ThingHandler;
 import org.openhab.core.thing.binding.builder.ChannelBuilder;
@@ -124,8 +125,20 @@ public class FreeAtHomeDeviceHandler extends FreeAtHomeSystemBaseHandler {
             return;
         }
 
+        FreeAtHomeDatapointGroup dpg = mapChannelUID.get(channelUID);
+
+        // is the dataponitgroup invalid
+        if (dpg != null) {
+            logger.debug("Handle command for device (but invalid datapointgroup) {} - at channel {} - full command {}",
+                    deviceID, channelUID.getAsString(), command.toFullString());
+
+            String errInfo = "Datapointgroup is not available in RefreshCommand for channel: "
+                    + channelUID.getAsString();
+
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.HANDLER_MISSING_ERROR, errInfo);
+        }
+
         if (command instanceof RefreshType) {
-            FreeAtHomeDatapointGroup dpg = mapChannelUID.get(channelUID);
             String valueStr = "0";
 
             // Check whether it is a INPUT only datapoint group
@@ -141,8 +154,6 @@ public class FreeAtHomeDeviceHandler extends FreeAtHomeSystemBaseHandler {
 
             updateState(channelUID, vsc.convertToState(valueStr));
         } else {
-            FreeAtHomeDatapointGroup dpg = mapChannelUID.get(channelUID);
-
             ValueStateConverter vsc = dpg.getValueStateConverter();
 
             State state = null;

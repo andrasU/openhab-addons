@@ -110,6 +110,12 @@ public class FreeAtHomeDeviceChannel {
 
                 datapointGroups.add(newDatapointGroup);
 
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_INPUT_AS_OUTPUT, 256, channelId,
+                        channelObject);
+
+                datapointGroups.add(newDatapointGroup);
+
                 break;
             }
             case FID_ROOM_TEMPERATURE_CONTROLLER_MASTER_WITHOUT_FAN:
