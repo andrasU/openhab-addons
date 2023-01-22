@@ -182,7 +182,17 @@ public class FreeAtHomeDatapointGroup {
     }
 
     public boolean isReadOnly() {
-        return (DATAPOINTGROUP_DIRECTION_INPUTOUTPUT == datapointGroupDirection) ? false : true;
+        boolean result = true;
+
+        if (DATAPOINTGROUP_DIRECTION_INPUTOUTPUT == datapointGroupDirection) {
+            result = false;
+        }
+
+        if (DATAPOINTGROUP_DIRECTION_INPUT == datapointGroupDirection) {
+            result = false;
+        }
+
+        return result;
     }
 
     public int getMax() {
