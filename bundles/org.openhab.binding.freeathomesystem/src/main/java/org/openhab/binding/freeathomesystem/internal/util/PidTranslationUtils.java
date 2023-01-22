@@ -237,7 +237,7 @@ public class PidTranslationUtils {
                 "", "Heating demand feedback signal", ""));
         mapDescObj.put("0x0150", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_TEMPERATURE, "",
                 "", "Cooling demand feedback signal", ""));
-        mapDescObj.put("0x0151", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_DECIMAL, CATEGORY_HUMIDITY, "", "",
+        mapDescObj.put("0x0151", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_HUMIDITY, "", "",
                 "Humidity", "Measured Humidity"));
         mapDescObj.put("0x0152", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_UNKNOWN, CATEGORY_UNDEFINED, "", "",
                 "Aux On/Off request", "Aux On/Off request"));
@@ -523,6 +523,23 @@ public class PidTranslationUtils {
                 "Measured temperature 3", "For debug purposes"));
         mapDescObj.put("0xFF04", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_UNKNOWN, CATEGORY_UNDEFINED, "", "",
                 "Measured temperature 4", "For debug purposes"));
+
+        mapDescObj.put("0x061A", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_DECIMAL, CATEGORY_PRESSURE, "", "",
+                "Air Quality - Pressure value", "Air quality sensor value - Pressure value"));
+        mapDescObj.put("0x061B", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
+                "Air Quality - CO2 value", "Air quality sensor value - CO2 value"));
+        mapDescObj.put("0x061C", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
+                "Air Quality - CO value", "Air quality sensor value - CO value"));
+        mapDescObj.put("0x061D", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
+                "Air Quality - NO2 value", "Air quality sensor value - NO2 value"));
+        mapDescObj.put("0x061E", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
+                "Air Quality - O3 value", "Air quality sensor value - O3 value"));
+        mapDescObj.put("0x061F", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
+                "Air Quality - PM10 value", "Air quality sensor value - PM10 value"));
+        mapDescObj.put("0x0620", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
+                "Air Quality - PM25 value", "Air quality sensor value - PM25 value"));
+        mapDescObj.put("0x0621", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
+                "Air Quality - VOC value", "Air quality sensor value - VOC value"));
 
         MAP_TRANSLATOR = Collections.unmodifiableMap(mapDescObj);
     }

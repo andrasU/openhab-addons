@@ -326,12 +326,22 @@ public class FreeAtHomeDeviceChannel {
                 logger.info("Temperature sensor channel - Channel FID: {}", channelFunctionID);
 
                 FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
-                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 38, channelId, channelObject);
-                datapointGroups.add(newDatapointGroup);
+                if (newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 38, channelId,
+                        channelObject) == true) {
+                    datapointGroups.add(newDatapointGroup);
+                }
 
                 newDatapointGroup = new FreeAtHomeDatapointGroup();
-                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1024, channelId, channelObject);
-                datapointGroups.add(newDatapointGroup);
+                if (newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1024, channelId,
+                        channelObject) == true) {
+                    datapointGroups.add(newDatapointGroup);
+                }
+
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                if (newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 304, channelId,
+                        channelObject) == true) {
+                    datapointGroups.add(newDatapointGroup);
+                }
 
                 break;
             }
@@ -350,6 +360,105 @@ public class FreeAtHomeDeviceChannel {
 
                 newDatapointGroup = new FreeAtHomeDatapointGroup();
                 newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1028, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_AIRQUALITYSENSOR_CO: {
+                this.channelId = channelId;
+
+                logger.info("AQS CO channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1564, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_AIRQUALITYSENSOR_CO2: {
+                this.channelId = channelId;
+
+                logger.info("AQS CO2 channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1563, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_AIRQUALITYSENSOR_HUMIDITY: {
+                this.channelId = channelId;
+
+                logger.info("AQS Humidity channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 337, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_AIRQUALITYSENSOR_PRESSURE: {
+                this.channelId = channelId;
+
+                logger.info("AQS Pressure channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1562, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_AIRQUALITYSENSOR_NO2: {
+                this.channelId = channelId;
+
+                logger.info("AQS NO2 channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1565, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_AIRQUALITYSENSOR_O3: {
+                this.channelId = channelId;
+
+                logger.info("AQS O3 channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1566, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_AIRQUALITYSENSOR_PM10: {
+                this.channelId = channelId;
+
+                logger.info("AQS PM10 channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1567, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_AIRQUALITYSENSOR_VOC: {
+                this.channelId = channelId;
+
+                logger.info("AQS VOC channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1569, channelId, channelObject);
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
+            case FID_AIRQUALITYSENSOR_PM25: {
+                this.channelId = channelId;
+
+                logger.info("AQS PM25 channel - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 1568, channelId, channelObject);
                 datapointGroups.add(newDatapointGroup);
 
                 break;

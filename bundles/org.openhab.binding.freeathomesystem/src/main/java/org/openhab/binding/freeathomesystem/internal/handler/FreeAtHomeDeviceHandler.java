@@ -128,69 +128,68 @@ public class FreeAtHomeDeviceHandler extends FreeAtHomeSystemBaseHandler {
         FreeAtHomeDatapointGroup dpg = mapChannelUID.get(channelUID);
 
         // is the dataponitgroup invalid
-        if (dpg != null) {
+        if (dpg == null) {
             logger.debug("Handle command for device (but invalid datapointgroup) {} - at channel {} - full command {}",
                     deviceID, channelUID.getAsString(), command.toFullString());
 
-            String errInfo = "Datapointgroup is not available in RefreshCommand for channel: "
-                    + channelUID.getAsString();
+            String errInfo = "Datapointgroup is not available in RefreshCommand - channel: " + channelUID.getAsString();
 
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.HANDLER_MISSING_ERROR, errInfo);
-        }
-
-        if (command instanceof RefreshType) {
-            String valueStr = "0";
-
-            // Check whether it is a INPUT only datapoint group
-            if (dpg.getDirection() == FreeAtHomeDatapointGroup.DATAPOINTGROUP_DIRECTION_INPUT) {
-                valueStr = freeAtHomeBridge.getDatapoint(deviceID, dpg.getInputDatapoint().channelId,
-                        dpg.getInputDatapoint().getDatapointId());
-            } else {
-                valueStr = freeAtHomeBridge.getDatapoint(deviceID, dpg.getOutputDatapoint().channelId,
-                        dpg.getOutputDatapoint().getDatapointId());
-            }
-
-            ValueStateConverter vsc = dpg.getValueStateConverter();
-
-            updateState(channelUID, vsc.convertToState(valueStr));
         } else {
-            ValueStateConverter vsc = dpg.getValueStateConverter();
+            if (command instanceof RefreshType) {
+                String valueStr = "0";
 
-            State state = null;
-
-            if (command instanceof StopMoveType) {
-                valueString = "0";
-            } else {
-                state = ((State) command);
-                valueString = vsc.convertToValueString(state);
-            }
-
-            freeAtHomeBridge.setDatapoint(deviceID, dpg.getInputDatapoint().channelId,
-                    dpg.getInputDatapoint().getDatapointId(), valueString);
-
-            if (state != null) {
-                updateState(channelUID, state);
-            } else {
-                updateState(channelUID, new StringType("STOP"));
-            }
-        }
-
-        if (device.isScene()) {
-            // the scene can be triggered only therefore reset after 5 seconds
-            scheduler.execute(() -> {
-                try {
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    logger.debug("Handle wait for scene {} - at channel {} - full command {}", deviceID,
-                            channelUID.getAsString(), command.toFullString());
+                // Check whether it is a INPUT only datapoint group
+                if (dpg.getDirection() == FreeAtHomeDatapointGroup.DATAPOINTGROUP_DIRECTION_INPUT) {
+                    valueStr = freeAtHomeBridge.getDatapoint(deviceID, dpg.getInputDatapoint().channelId,
+                            dpg.getInputDatapoint().getDatapointId());
+                } else {
+                    valueStr = freeAtHomeBridge.getDatapoint(deviceID, dpg.getOutputDatapoint().channelId,
+                            dpg.getOutputDatapoint().getDatapointId());
                 }
 
-                updateState(channelUID, OnOffType.OFF);
-            });
-        }
+                ValueStateConverter vsc = dpg.getValueStateConverter();
 
-        logger.debug("Handle command for device {} - at channel {} - full command {}", deviceID,
-                channelUID.getAsString(), command.toFullString());
+                updateState(channelUID, vsc.convertToState(valueStr));
+            } else {
+                ValueStateConverter vsc = dpg.getValueStateConverter();
+
+                State state = null;
+
+                if (command instanceof StopMoveType) {
+                    valueString = "0";
+                } else {
+                    state = ((State) command);
+                    valueString = vsc.convertToValueString(state);
+                }
+
+                freeAtHomeBridge.setDatapoint(deviceID, dpg.getInputDatapoint().channelId,
+                        dpg.getInputDatapoint().getDatapointId(), valueString);
+
+                if (state != null) {
+                    updateState(channelUID, state);
+                } else {
+                    updateState(channelUID, new StringType("STOP"));
+                }
+            }
+
+            if (device.isScene()) {
+                // the scene can be triggered only therefore reset after 5 seconds
+                scheduler.execute(() -> {
+                    try {
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        logger.debug("Handle wait for scene {} - at channel {} - full command {}", deviceID,
+                                channelUID.getAsString(), command.toFullString());
+                    }
+
+                    updateState(channelUID, OnOffType.OFF);
+                });
+            }
+
+            logger.debug("Handle command for device {} - at channel {} - full command {}", deviceID,
+                    channelUID.getAsString(), command.toFullString());
+        }
     }
 
     public void handleEventBasedUpdate(ChannelUID channelUID, State state) {
