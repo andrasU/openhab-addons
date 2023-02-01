@@ -76,6 +76,18 @@ public class FreeAtHomeDeviceChannel {
 
                 break;
             }
+            case FID_DIMMING_SENSOR: {
+                this.channelId = channelId;
+
+                logger.info("Dimming sensor channel found - Channel FID: {}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 272, channelId, channelObject);
+
+                datapointGroups.add(newDatapointGroup);
+
+                break;
+            }
             case FID_TRIGGER:
             case FID_SWITCH_ACTUATOR: {
                 this.channelId = channelId;
@@ -159,6 +171,14 @@ public class FreeAtHomeDeviceChannel {
                 newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_INPUT, 66, channelId, channelObject);
                 datapointGroups.add(newDatapointGroup);
 
+                // Additional channel for RTC device
+                if (HexUtils
+                        .getIntegerFromHex(channelFunctionID) == FID_ROOM_TEMPERATURE_CONTROLLER_MASTER_WITHOUT_FAN) {
+                    newDatapointGroup = new FreeAtHomeDatapointGroup();
+                    newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 48, channelId, channelObject);
+                    datapointGroups.add(newDatapointGroup);
+                }
+
                 break;
             }
             case FID_WINDOW_DOOR_POSITION_SENSOR:
@@ -222,7 +242,7 @@ public class FreeAtHomeDeviceChannel {
                 logger.info("Door ring sensor channel - Channel FID: {}", channelFunctionID);
 
                 FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
-                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_INPUT, 2, channelId, channelObject);
+                newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 2, channelId, channelObject);
 
                 datapointGroups.add(newDatapointGroup);
 

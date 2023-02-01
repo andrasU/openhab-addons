@@ -32,7 +32,6 @@
 				<description>Password for gateway</description>
 				<default>12345</default>
 			</parameter>
-
 		</config-description>
 	</bridge-type>
 </thing:thing-descriptions>

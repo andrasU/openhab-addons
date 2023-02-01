@@ -43,7 +43,11 @@ public class EventSocket extends WebSocketAdapter {
         super.onWebSocketConnect(session);
 
         if (closureLatch != null) {
-            logger.debug("Socket Connected - latch [ {} ] - sesson: {}", closureLatch.getCount(), session);
+            session.setIdleTimeout(60 * 60 * 1000);
+
+            logger.debug("Socket Connected - Timeout {} - latch [ {} ] - sesson: {}", session.getIdleTimeout(),
+                    closureLatch.getCount(), session);
+
         } else {
             logger.debug("Socket Connected - but latch was not initialized - sesson: {}", session);
         }

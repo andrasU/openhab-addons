@@ -60,6 +60,8 @@ import org.slf4j.LoggerFactory;
  */
 public class FreeAtHomeDeviceHandler extends FreeAtHomeSystemBaseHandler {
 
+    private static final int VIRTUAL_DEVICE_KEEPALIVETIME_TIMEOUT_IN_MINUTE = 5;
+
     private static final String CHANNEL_URI = "channel-type:freeathomesystem:config";
 
     private final Logger logger = LoggerFactory.getLogger(FreeAtHomeDeviceHandler.class);
@@ -71,6 +73,7 @@ public class FreeAtHomeDeviceHandler extends FreeAtHomeSystemBaseHandler {
     private static URI configDescriptionUriChannel;
 
     private Map<ChannelUID, FreeAtHomeDatapointGroup> mapChannelUID = new HashMap<ChannelUID, FreeAtHomeDatapointGroup>();
+    private Map<ChannelUID, String> mapChannelUIDVal = new HashMap<ChannelUID, String>();
 
     public FreeAtHomeDeviceHandler(Thing thing, FreeAtHomeChannelTypeProvider channelTypeProvider,
             FreeAtHomeChannelGroupTypeProvider channelGroupTypeProvider) {
@@ -151,6 +154,11 @@ public class FreeAtHomeDeviceHandler extends FreeAtHomeSystemBaseHandler {
                 ValueStateConverter vsc = dpg.getValueStateConverter();
 
                 updateState(channelUID, vsc.convertToState(valueStr));
+
+                // in case of virtual channels store the current value string
+                if (device.isVirtual()) {
+                    mapChannelUIDVal.put(channelUID, valueStr);
+                }
             } else {
                 ValueStateConverter vsc = dpg.getValueStateConverter();
 
@@ -170,6 +178,15 @@ public class FreeAtHomeDeviceHandler extends FreeAtHomeSystemBaseHandler {
                     updateState(channelUID, state);
                 } else {
                     updateState(channelUID, new StringType("STOP"));
+                }
+
+                // in case of virtual channels store the current value string
+                if (device.isVirtual()) {
+
+                    logger.info("refresh virtual device state device: {} ch: {} val: {}", deviceID,
+                            channelUID.getAsString(), valueString);
+
+                    mapChannelUIDVal.put(channelUID, valueString);
                 }
             }
 

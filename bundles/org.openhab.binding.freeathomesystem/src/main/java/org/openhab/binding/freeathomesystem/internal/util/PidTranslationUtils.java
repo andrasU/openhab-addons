@@ -113,8 +113,8 @@ public class PidTranslationUtils {
                 "Force-position blind", "Forces value dependent high priority up or down state"));
         mapDescObj.put("0x0029", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
                 "Window/Door position", "Delivers position for Window/Door (Open / Tilted / Closed)"));
-        mapDescObj.put("0x0030", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
-                "Actuating Value Heating", "Determines the through flow volume of the control valve"));
+        mapDescObj.put("0x0030", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_TEMPERATURE, "",
+                "", "Actuating Value Heating", "Determines the through flow volume of the control valve"));
         mapDescObj.put("0x0031", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
                 "Fan Level Heating", "Display value of the fan coil speed. (0=off / 1=lowest - 5=fastest)"));
         mapDescObj.put("0x0032", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_TEMPERATURE, "",
@@ -524,6 +524,7 @@ public class PidTranslationUtils {
         mapDescObj.put("0xFF04", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_UNKNOWN, CATEGORY_UNDEFINED, "", "",
                 "Measured temperature 4", "For debug purposes"));
 
+        // new values missing original documentation
         mapDescObj.put("0x061A", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_DECIMAL, CATEGORY_PRESSURE, "", "",
                 "Air Quality - Pressure value", "Air quality sensor value - Pressure value"));
         mapDescObj.put("0x061B", createFreeAtHomePairingIdTranslation(PID_VALUETYPE_INTEGER, CATEGORY_UNDEFINED, "", "",
