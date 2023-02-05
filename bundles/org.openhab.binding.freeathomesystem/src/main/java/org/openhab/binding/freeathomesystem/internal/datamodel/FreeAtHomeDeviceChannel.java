@@ -51,8 +51,12 @@ public class FreeAtHomeDeviceChannel {
 
         channelFunctionID = channelObject.get("functionID").getAsString();
 
-        if (isScene) {
-            channelFunctionID = channelFunctionID.substring(0, channelFunctionID.length() - 1) + "0";
+        // check whether this is a valid channel
+        if (channelFunctionID.isEmpty()) {
+            // invalid channel found
+            logger.info("Invalid channel fucntion ID found - Devicelabel: {} Channel: {}", deviceLabel, channelId);
+
+            return false;
         }
 
         if (!channelFunctionID.isEmpty()) {
@@ -63,7 +67,12 @@ public class FreeAtHomeDeviceChannel {
             }
         }
 
+        if (isScene) {
+            channelFunctionID = channelFunctionID.substring(0, channelFunctionID.length() - 1) + "0";
+        }
+
         switch (HexUtils.getIntegerFromHex(channelFunctionID)) {
+            case FID_PANEL_SWITCH_SENSOR:
             case FID_SWITCH_SENSOR: {
                 this.channelId = channelId;
 
@@ -76,6 +85,7 @@ public class FreeAtHomeDeviceChannel {
 
                 break;
             }
+            case FID_PANEL_DIMMING_SENSOR:
             case FID_DIMMING_SENSOR: {
                 this.channelId = channelId;
 
@@ -185,6 +195,8 @@ public class FreeAtHomeDeviceChannel {
             case FID_WINDOW_DOOR_SENSOR: {
                 this.channelId = channelId;
 
+                logger.info("Window/Door position sensor channel created - Channel FID: {}", channelFunctionID);
+
                 FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
                 newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 53, channelId, channelObject);
                 datapointGroups.add(newDatapointGroup);
@@ -192,8 +204,6 @@ public class FreeAtHomeDeviceChannel {
                 newDatapointGroup = new FreeAtHomeDatapointGroup();
                 newDatapointGroup.addDatapointToGroup(DATAPOINT_DIRECTION_OUTPUT, 41, channelId, channelObject);
                 datapointGroups.add(newDatapointGroup);
-
-                logger.info("Window/Door position sensor channel created - Channel FID: {}", channelFunctionID);
 
                 break;
             }
@@ -486,7 +496,7 @@ public class FreeAtHomeDeviceChannel {
             default: {
                 logger.info("Unknown channel found - Channel FID: {}", channelFunctionID);
 
-                break;
+                return false;
             }
         }
 

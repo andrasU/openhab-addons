@@ -549,55 +549,55 @@ public class PidTranslationUtils {
     public static String getShortTextForPairingId(String Key) {
         PIdContainerClass desc = MAP_TRANSLATOR.get(Key);
 
-        return desc.label;
+        return (desc != null) ? desc.label : "Unknown label";
     }
 
     @SuppressWarnings("null")
     public static String getDescriptionTextForPairingId(String Key) {
         PIdContainerClass desc = MAP_TRANSLATOR.get(Key);
 
-        return desc.descprition;
+        return (desc != null) ? desc.descprition : "Unknown description";
     }
 
     @SuppressWarnings("null")
     public static String getValueTypeForPairingId(String Key) {
         PIdContainerClass desc = MAP_TRANSLATOR.get(Key);
 
-        return desc.valueType;
+        return (desc != null) ? desc.valueType : PID_VALUETYPE_DECIMAL;
     }
 
     @SuppressWarnings("null")
     public static String getItemTypeForPairingId(String Key) {
         PIdContainerClass desc = MAP_TRANSLATOR.get(Key);
 
-        return desc.category;
+        return (desc != null) ? desc.category : CATEGORY_UNDEFINED;
     }
 
     @SuppressWarnings("null")
     public static String getCategoryForPairingId(String Key) {
         PIdContainerClass desc = MAP_TRANSLATOR.get(Key);
 
-        return desc.category;
+        return (desc != null) ? desc.category : CATEGORY_UNDEFINED;
     }
 
     @SuppressWarnings("null")
     public static String getPatternForPairingId(String Key) {
         PIdContainerClass desc = MAP_TRANSLATOR.get(Key);
 
-        return desc.category;
+        return (desc != null) ? desc.category : CATEGORY_UNDEFINED;
     }
 
     @SuppressWarnings("null")
     public static int getMax(String Key) {
         PIdContainerClass desc = MAP_TRANSLATOR.get(Key);
 
-        return desc.max;
+        return (desc != null) ? desc.max : 1;
     }
 
     @SuppressWarnings("null")
     public static int getMin(String Key) {
         PIdContainerClass desc = MAP_TRANSLATOR.get(Key);
 
-        return desc.min;
+        return (desc != null) ? desc.min : 0;
     }
 }

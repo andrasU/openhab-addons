@@ -123,6 +123,7 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
      * @author Andras Uhrin
      *
      */
+    @SuppressWarnings("deprecation")
     public @Nullable List<String> getDeviceDeviceList() {
         boolean ret = false;
 

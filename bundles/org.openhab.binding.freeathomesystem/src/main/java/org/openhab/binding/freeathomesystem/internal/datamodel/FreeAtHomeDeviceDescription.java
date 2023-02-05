@@ -113,14 +113,14 @@ public class FreeAtHomeDeviceDescription {
             for (String nextChannel : jsonObjectOfChannels.keySet()) {
                 FreeAtHomeDeviceChannel newChannel = new FreeAtHomeDeviceChannel();
 
-                newChannel.createChannelFromJson(deviceLabel, nextChannel, jsonObjectOfChannels, sceneIsDetected,
-                        ruleIsDetected);
+                if (newChannel.createChannelFromJson(deviceLabel, nextChannel, jsonObjectOfChannels, sceneIsDetected,
+                        ruleIsDetected) == true) {
+                    if (interfaceType == DEVICE_INTERFACE_VIRTUAL_TYPE) {
+                        newChannel.applyChangesForVirtualDevice();
+                    }
 
-                if (interfaceType == DEVICE_INTERFACE_VIRTUAL_TYPE) {
-                    newChannel.applyChangesForVirtualDevice();
+                    listOfChannels.add(newChannel);
                 }
-
-                listOfChannels.add(newChannel);
             }
         }
     }
