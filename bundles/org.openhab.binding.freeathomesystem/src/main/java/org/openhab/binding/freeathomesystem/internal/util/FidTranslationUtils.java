@@ -194,6 +194,9 @@ public class FidTranslationUtils {
     public static final int FID_AIRQUALITYSENSOR_VOC = 0x0E01E;
     public static final int FID_AIRQUALITYSENSOR_HUMIDITY = 0x0B03F;
 
+    public static final int FID_MOVEMENT_DETECTOR_FLEX = 0x1090;
+    public static final int FID_SWITCH_ACTUATOR_FLEX = 0x1810;
+
     static {
         Map<String, String> mapDesc = new HashMap<String, String>();
 
@@ -349,6 +352,9 @@ public class FidTranslationUtils {
         mapDesc.put("0x0E01D", "Air quality sensor PM25"); // FID_AIRQUALITYSENSOR_PM25
         mapDesc.put("0x0E01E", "Air quality sensor VOC"); // FID_AIRQUALITYSENSOR_VOC
         mapDesc.put("0x0B03F", "Air quality sensor humidity"); // FID_AIRQUALITYSENSOR_HUMIDITY
+
+        mapDesc.put("0x1090", "Movement detector (flex)"); // FID_MOVEMENT_DETECTOR_FLEX
+        mapDesc.put("0x1810", "Switch actuator(flex)"); // FID_SWITCH_ACTUATOR_FLEX
 
         MAP_FUNCTIONID = Collections.unmodifiableMap(mapDesc);
     }

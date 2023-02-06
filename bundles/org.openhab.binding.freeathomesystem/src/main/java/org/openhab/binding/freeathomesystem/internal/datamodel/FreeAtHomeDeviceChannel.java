@@ -98,6 +98,7 @@ public class FreeAtHomeDeviceChannel {
 
                 break;
             }
+            case FID_SWITCH_ACTUATOR_FLEX:
             case FID_TRIGGER:
             case FID_SWITCH_ACTUATOR: {
                 this.channelId = channelId;
@@ -112,6 +113,7 @@ public class FreeAtHomeDeviceChannel {
 
                 break;
             }
+            case FID_MOVEMENT_DETECTOR_FLEX:
             case FID_MOVEMENT_DETECTOR: {
                 this.channelId = channelId;
 
