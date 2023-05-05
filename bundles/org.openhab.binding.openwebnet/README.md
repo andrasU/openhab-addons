@@ -228,6 +228,7 @@ OPEN command to execute: *5*8#134##
 | `battery`                    | `bus_alarm_system`                     | String      | Alarm system battery state (`OK`, `FAULT`, `UNLOADED`)                |      R      |
 | `armed`                      | `bus_alarm_system`                     | Switch      | Alarm system is armed (`ON`) or disarmed (`OFF`)                      |      R      |
 | `alarm`                      | `bus_alarm_zone`                       | String      | Current alarm for the zone  (`SILENT`, `INTRUSION`, `TAMPERING`, `ANTI_PANIC`) |      R      |
+| `timestamp`                  | `bus_alarm_zone`                       | DateTime  | Current date and time of the zone's alarm event (YY/MM/DD hh:mm:ss)   |      R      |
 
 ### Thermo channels
 
@@ -526,5 +527,6 @@ Special thanks for helping on testing this binding go to:
 [@feodor](https://community.openhab.org/u/feodor),
 [@aconte80](https://community.openhab.org/u/aconte80),
 [@rubenfuser](https://community.openhab.org/u/rubenfuser),
-[@stamate_viorel](https://community.openhab.org/u/stamate_viorel)
+[@stamate_viorel](https://community.openhab.org/u/stamate_viorel),
+[@marchino](https://community.openhab.org/u/marchino)
 and many others at the fantastic openHAB community!
