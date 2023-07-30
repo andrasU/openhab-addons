@@ -48,11 +48,11 @@ This keep-alive signal must be provided by a user script or set the TTL value of
 
 # Tested SysAP Versions
 
-|<p style="text-align: center;">Version</p>|<p style="text-align: center;">Supported</p>|
-|---|---|
-|<p style="text-align: center;">2.6.1</p>|<p style="text-align: center;">yes</p>|
-|<p style="text-align: center;">2.6.3</p>|<p style="text-align: center;">yes</p>|
-|<p style="text-align: center;">3.1.1</p>|<p style="text-align: center;">yes</p>|
+| Version | Supported |
+|---------|-----------|
+| 2.6.1   | yes       |
+| 2.6.3   | yes       |
+| 3.1.1   | yes       |
 
 # Setup / Installation
 
@@ -87,11 +87,11 @@ If a Thing channel is a free@home device sensor channel, this channel is read on
 
 There are several settings for a bridge:
 
-|Parameter|Description|
-|---|---|
-| **ipaddress** (required) | Network address of the free@home SysAP |
-| **username** (required) | Valid user name for the free@home SysAP |
-| **password** (required) | Password of the user |
+| Parameter                | Description                             |
+|--------------------------|-----------------------------------------|
+| **ipaddress** (required) | Network address of the free@home SysAP  |
+| **username** (required)  | Valid user name for the free@home SysAP |
+| **password** (required)  | Password of the user                    |
 
 ## Examples for .things
 
@@ -107,7 +107,7 @@ Bridge freeathomesystem:bridge:mysysap [ ipaddress="...", username="...", passwo
 ```
 
 The only parameter needed to create a Thing is the free@home device ID, which you can find as sticker on the device.
-The creation of the openHAB channels to operate the free@home device is happening automatically based on the device features detected on-line.
+The creation of the openHAB channels to operate the free@home device is happening automatically based on the device features detected online.
 
 ## Examples for .items
 
