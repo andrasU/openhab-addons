@@ -103,9 +103,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * stub method for handlCommand
-     *
-     * @author Andras Uhrin
-     *
      */
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
@@ -114,9 +111,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to get the device list
-     *
-     * @author Andras Uhrin
-     *
      */
     @SuppressWarnings("deprecation")
     public @Nullable List<String> getDeviceDeviceList() {
@@ -182,9 +176,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to send http request to get the device description
-     *
-     * @author Andras Uhrin
-     *
      */
     @SuppressWarnings("deprecation")
     public FreeAtHomeDeviceDescription getFreeatHomeDeviceDescription(String id) {
@@ -237,16 +228,9 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to get datapoint values for devices
-     *
-     * @author Andras Uhrin
-     *
      */
     @SuppressWarnings("deprecation")
-    public String getDatapoint(@Nullable String deviceId, @Nullable String channel, @Nullable String datapoint) {
-        if ((deviceId == null) || (channel == null) || (datapoint == null)) {
-            return new String("0");
-        }
-
+    public String getDatapoint(String deviceId, String channel, String datapoint) {
         String url = baseUrl + "/rest/datapoint/" + sysApUID + "/" + deviceId + "." + channel + "." + datapoint;
 
         try {
@@ -293,8 +277,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
                 }
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            logger.error("Communication error by getDatapoint [{}]", e.getMessage());
-
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
 
             return new String("0");
@@ -305,17 +287,10 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to set datapoint values in channels
-     *
-     * @author Andras Uhrin
-     *
      */
-    public boolean setDatapoint(@Nullable String deviceId, @Nullable String channel, @Nullable String datapoint,
-            String valueString) {
-        if ((deviceId == null) || (channel == null) || (datapoint == null)) {
-            return false;
-        }
-
+    public boolean setDatapoint(String deviceId, String channel, String datapoint, String valueString) {
         String url = baseUrl + "/rest/datapoint/" + sysApUID + "/" + deviceId + "." + channel + "." + datapoint;
+
         try {
             Request req = httpClient.newRequest(url);
 
@@ -334,8 +309,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
                 restartHttpConnection();
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            logger.debug("Communication error by setDatapoint [{}]", e.getMessage());
-
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
         }
 
@@ -344,9 +317,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to process socket events
-     *
-     * @author Andras Uhrin
-     *
      */
     @SuppressWarnings("deprecation")
     public void processSocketEvent(String receivedText) {
@@ -383,9 +353,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to open Http connection
-     *
-     * @author Andras Uhrin
-     *
      */
     public boolean openHttpConnection() {
         boolean ret = false;
@@ -415,7 +382,7 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
                 }
             }
 
-            logger.info("Start http client");
+            logger.debug("Start http client");
 
             ret = true;
         } catch (Exception ex) {
@@ -448,14 +415,15 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
                     ret = true;
 
-                    logger.info("HTTP connection to SysAP is OK");
+                    logger.debug("HTTP connection to SysAP is OK");
                 } else {
                     // response NOK, set error
                     httpConnectionOK.set(false);
 
                     ret = false;
 
-                    logger.info("Wrong credentials for SysAP");
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                            "@text/comm-error.wrong-credentials");
                 }
             } catch (URISyntaxException | InterruptedException | ExecutionException | TimeoutException ex) {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
@@ -472,9 +440,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to close Http connection
-     *
-     * @author Andras Uhrin
-     *
      */
     public boolean closeHttpConnection() {
         boolean ret = false;
@@ -511,9 +476,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to restart Http connection
-     *
-     * @author Andras Uhrin
-     *
      */
     public boolean restartHttpConnection() {
         boolean ret = false;
@@ -529,9 +491,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to connect the websocket session
-     *
-     * @author Andras Uhrin
-     *
      */
     @SuppressWarnings("null")
     public boolean connectWebsocketSession() {
@@ -579,9 +538,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to close the websocket connection
-     *
-     * @author Andras Uhrin
-     *
      */
     @SuppressWarnings({ "deprecation", "null" })
     public void closeWebSocketConnection() {
@@ -608,9 +564,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to open the websocket connection
-     *
-     * @author Andras Uhrin
-     *
      */
     @SuppressWarnings("null")
     public boolean openWebSocketConnection() {
@@ -669,9 +622,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to initialize the bridge
-     *
-     * @author Andras Uhrin
-     *
      */
     @Override
     public void initialize() {
@@ -724,9 +674,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to dispose
-     *
-     * @author Andras Uhrin
-     *
      */
     @Override
     public void dispose() {
@@ -734,9 +681,6 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Thread that maintains connection via Websocket.
-     *
-     * @author Andras Uhrin
-     *
      */
     private class FreeAtHomeWebsocketMonitorThread extends Thread {
 
