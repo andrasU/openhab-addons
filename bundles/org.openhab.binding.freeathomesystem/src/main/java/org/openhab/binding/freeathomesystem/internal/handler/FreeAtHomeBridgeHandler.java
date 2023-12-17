@@ -13,11 +13,13 @@
 
 package org.openhab.binding.freeathomesystem.internal.handler;
 
+import java.io.IOException;
 import java.io.StringReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -41,13 +43,16 @@ import org.eclipse.jetty.util.component.AbstractLifeCycle;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
+import org.openhab.binding.freeathomesystem.internal.FreeAtHomeSystemDiscoveryService;
 import org.openhab.binding.freeathomesystem.internal.configuration.FreeAtHomeBridgeHandlerConfiguration;
 import org.openhab.binding.freeathomesystem.internal.datamodel.FreeAtHomeDeviceDescription;
+import org.openhab.binding.freeathomesystem.internal.util.FreeAtHomeHttpCommunicationException;
 import org.openhab.core.thing.Bridge;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.ThingStatus;
 import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.core.thing.binding.BaseBridgeHandler;
+import org.openhab.core.thing.binding.ThingHandlerService;
 import org.openhab.core.types.Command;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +60,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.stream.JsonReader;
 
@@ -94,6 +100,8 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
     int numberOfComponents = 0;
 
     private static final int BRIDGE_WEBSOCKET_RECONNECT_DELAY = 60;
+    private static final int BRIDGE_WEBSOCKET_TIMEOUT = 90;
+    private static final int BRIDGE_WEBSOCKET_KEEPALIVE = 50;
 
     public FreeAtHomeBridgeHandler(Bridge thing, HttpClient client) {
         super(thing);
@@ -109,11 +117,16 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
         logger.warn("Unknown handle command for the bridge - channellUID {}, command {}", channelUID, command);
     }
 
+    @Override
+    public Collection<Class<? extends ThingHandlerService>> getServices() {
+        return List.of(FreeAtHomeSystemDiscoveryService.class);
+    }
+
     /**
      * Method to get the device list
      */
     @SuppressWarnings("deprecation")
-    public @Nullable List<String> getDeviceDeviceList() {
+    public @Nullable List<String> getDeviceDeviceList() throws FreeAtHomeHttpCommunicationException {
         List<String> listOfComponentId = new ArrayList<String>();
         boolean ret = false;
 
@@ -126,6 +139,12 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
             HttpClient client = httpClient;
 
             Request req = client.newRequest(url);
+
+            if (req == null) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "Invalid request object in getDeviceDeviceList with the URL [ " + url + " ]");
+            }
+
             ContentResponse response = req.send();
 
             // Get component List
@@ -136,31 +155,39 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
             JsonElement jsonTree = parser.parse(componentListString);
 
             // check the output
-            if (jsonTree.isJsonObject()) {
-                JsonObject jsonObject = jsonTree.getAsJsonObject();
-
-                // Get the main object
-                JsonElement listOfComponents = jsonObject.get(sysApUID);
-
-                if (listOfComponents != null) {
-                    JsonArray array = listOfComponents.getAsJsonArray();
-
-                    this.numberOfComponents = array.size();
-
-                    for (int i = 0; i < array.size(); i++) {
-                        JsonElement basicElement = array.get(i);
-
-                        listOfComponentId.add(basicElement.getAsString());
-                    }
-
-                    ret = true;
-                }
+            if (!jsonTree.isJsonObject()) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "Invalid jsonObject in getDeviceDeviceList with the URL [ " + url + " ]");
             }
 
+            JsonObject jsonObject = jsonTree.getAsJsonObject();
+
+            // Get the main object
+            JsonElement listOfComponents = jsonObject.get(sysApUID);
+
+            if (listOfComponents == null) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "Devices Section is missing in getDeviceDeviceList with the URL [ " + url + " ]");
+            }
+
+            JsonArray array = listOfComponents.getAsJsonArray();
+
+            this.numberOfComponents = array.size();
+
+            for (int i = 0; i < array.size(); i++) {
+                JsonElement basicElement = array.get(i);
+
+                listOfComponentId.add(basicElement.getAsString());
+            }
+
+            ret = true;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             logger.debug("Error to build up the Component list [ {} ]", e.getMessage());
 
             ret = false;
+
+            throw new FreeAtHomeHttpCommunicationException(0,
+                    "Http communication interrupted in getDeviceList [ " + e.getMessage() + " ]");
         }
 
         // Scan finished
@@ -175,13 +202,20 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
      * Method to send http request to get the device description
      */
     @SuppressWarnings("deprecation")
-    public FreeAtHomeDeviceDescription getFreeatHomeDeviceDescription(String id) {
+    public FreeAtHomeDeviceDescription getFreeatHomeDeviceDescription(String id)
+            throws FreeAtHomeHttpCommunicationException {
         FreeAtHomeDeviceDescription device = new FreeAtHomeDeviceDescription();
 
         String url = baseUrl + "/rest/device/" + sysApUID + "/" + id;
         try {
             HttpClient client = httpClient;
             Request req = client.newRequest(url);
+
+            if (req == null) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "Invalid request object in getDatapoint with the URL [ " + url + " ]");
+            }
+
             ContentResponse response;
             response = req.send();
 
@@ -192,29 +226,46 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
             JsonElement jsonTree = parser.parse(deviceString);
 
-            // check the output
-            if (jsonTree != null) {
-                if (jsonTree.isJsonObject()) {
-                    JsonObject jsonObject = jsonTree.getAsJsonObject();
-
-                    jsonObject = jsonObject.getAsJsonObject(sysApUID);
-
-                    if (jsonObject != null) {
-                        jsonObject = jsonObject.getAsJsonObject("devices");
-
-                        if (jsonObject != null) {
-                            device = new FreeAtHomeDeviceDescription(jsonObject, id);
-                        }
-                    }
-                }
+            if (jsonTree == null) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "No data is received by getDatapoint with the URL [ " + url + " ]");
             }
-        } catch (InterruptedException e) {
+
+            if (!jsonTree.isJsonObject()) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "Invalid jsonObject in getFreeatHomeDeviceDescription with the URL [ " + url + " ]");
+            }
+
+            // check the output
+            JsonObject jsonObject = jsonTree.getAsJsonObject();
+
+            if (jsonObject == null) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "Main jsonObject is invalid in getFreeatHomeDeviceDescription with the URL [ " + url + " ]");
+            }
+
+            jsonObject = jsonObject.getAsJsonObject(sysApUID);
+
+            if (jsonObject == null) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "jsonObject is invalid in getFreeatHomeDeviceDescription with the URL [ " + url + " ]");
+            }
+
+            jsonObject = jsonObject.getAsJsonObject("devices");
+
+            if (jsonObject == null) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "Devices Section is missing in getFreeatHomeDeviceDescription with the URL [ " + url + " ]");
+            }
+
+            device = new FreeAtHomeDeviceDescription(jsonObject, id);
+        } catch (InterruptedException | ExecutionException | TimeoutException e) {
             logger.debug("No communication possible to get device list - Communication interrupt [ {} ]",
                     e.getMessage());
-        } catch (TimeoutException e) {
-            logger.debug("No communication possible to get device list - Communication timeout [ {} ]", e.getMessage());
-        } catch (ExecutionException e) {
-            logger.debug("No communication possible to get device list - exception [ {} ]", e.getMessage());
+
+            throw new FreeAtHomeHttpCommunicationException(0,
+                    "Http communication interrupted in getDeviceList [ " + e.getMessage() + " ]");
+
         }
 
         return device;
@@ -224,7 +275,8 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
      * Method to get datapoint values for devices
      */
     @SuppressWarnings("deprecation")
-    public String getDatapoint(String deviceId, String channel, String datapoint) {
+    public String getDatapoint(String deviceId, String channel, String datapoint)
+            throws FreeAtHomeHttpCommunicationException {
         String url = baseUrl + "/rest/datapoint/" + sysApUID + "/" + deviceId + "." + channel + "." + datapoint;
 
         try {
@@ -232,61 +284,76 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
             logger.debug("Get datapoint by url: {}", url);
 
-            if (req != null) {
-                ContentResponse response = req.send();
-
-                String deviceString = new String(response.getContent());
-
-                JsonReader reader = new JsonReader(new StringReader(deviceString));
-
-                reader.setLenient(true);
-
-                JsonParser parser = new JsonParser();
-
-                JsonElement jsonTree = parser.parse(reader);
-
-                logger.debug("Communication result [{}]", response.getStatus());
-
-                if (response.getStatus() != 200) {
-                    logger.error("Communication error by getDatapoint [{}]", response.getStatus());
-                }
-
-                // check the output
-                if (jsonTree != null) {
-                    if (jsonTree.isJsonObject()) {
-                        JsonObject jsonObject = jsonTree.getAsJsonObject();
-
-                        jsonObject = jsonObject.getAsJsonObject(sysApUID);
-                        JsonArray jsonValueArray = jsonObject.getAsJsonArray("values");
-
-                        JsonElement element = jsonValueArray.get(0);
-                        String value = element.getAsString();
-
-                        if (value.isEmpty()) {
-                            value = "0";
-                        }
-
-                        return value;
-                    }
-                }
+            if (req == null) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "Invalid request object in getDatapoint with the URL [ " + url + " ]");
             }
+
+            ContentResponse response = req.send();
+
+            if (response.getStatus() != 200) {
+                throw new FreeAtHomeHttpCommunicationException(response.getStatus(), response.getReason());
+            }
+
+            String deviceString = new String(response.getContent());
+
+            JsonReader reader = new JsonReader(new StringReader(deviceString));
+
+            reader.setLenient(true);
+
+            JsonParser parser = new JsonParser();
+
+            JsonElement jsonTree = parser.parse(reader);
+
+            if (jsonTree == null) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "No data is received by getDatapoint with the URL [ " + url + " ]");
+            }
+
+            JsonObject jsonObject = jsonTree.getAsJsonObject();
+
+            jsonObject = jsonObject.getAsJsonObject(sysApUID);
+            JsonArray jsonValueArray = jsonObject.getAsJsonArray("values");
+
+            JsonElement element = jsonValueArray.get(0);
+            String value = element.getAsString();
+
+            if (value.isEmpty()) {
+                value = "0";
+            }
+
+            return value;
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
 
-            return new String("0");
-        }
+            logger.error("Http connection timeout or http connection interrupt in getDatapoint [{}]", e.getMessage());
 
-        return new String("0");
+            throw new FreeAtHomeHttpCommunicationException(0,
+                    "Http communication interrupted [ " + e.getMessage() + " ]");
+        } catch (JsonParseException e) {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
+
+            logger.error("Invalid JSON file is received by getDatapoint with the URL [{}]", e.getMessage());
+
+            throw new FreeAtHomeHttpCommunicationException(0,
+                    "Invalid JSON file is received by getDatapoint with the URL [ " + e.getMessage() + " ]");
+        }
     }
 
     /**
      * Method to set datapoint values in channels
      */
-    public boolean setDatapoint(String deviceId, String channel, String datapoint, String valueString) {
+    public boolean setDatapoint(String deviceId, String channel, String datapoint, String valueString)
+            throws FreeAtHomeHttpCommunicationException {
         String url = baseUrl + "/rest/datapoint/" + sysApUID + "/" + deviceId + "." + channel + "." + datapoint;
 
         try {
             Request req = httpClient.newRequest(url);
+
+            if (req == null) {
+                throw new FreeAtHomeHttpCommunicationException(0,
+                        "Invalid request object in getDatapoint with the URL [ " + url + " ]");
+            }
 
             req.content(new StringContentProvider(valueString));
             req.method(HttpMethod.PUT);
@@ -295,15 +362,16 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
             ContentResponse response = req.send();
 
-            logger.debug("Communication result [{}]", response.getStatus());
-
             if (response.getStatus() != 200) {
-                logger.error("Communication error by setDatapoint [{}]", response.getStatus());
-
-                restartHttpConnection();
+                throw new FreeAtHomeHttpCommunicationException(response.getStatus(), response.getReason());
             }
         } catch (InterruptedException | ExecutionException | TimeoutException e) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
+
+            restartHttpConnection();
+
+            throw new FreeAtHomeHttpCommunicationException(0,
+                    "Http communication interrupted [ " + e.getMessage() + " ]");
         }
 
         return true;
@@ -496,14 +564,15 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
             // Start socket client
             if ((websocketClient != null) && (socket != null)) {
                 websocketClient.setMaxTextMessageBufferSize(8 * 1024);
-                websocketClient.setMaxIdleTimeout(BRIDGE_WEBSOCKET_RECONNECT_DELAY * 60 * 1000);
+                websocketClient.setMaxIdleTimeout(BRIDGE_WEBSOCKET_TIMEOUT * 60 * 1000);
+                websocketClient.setConnectTimeout(BRIDGE_WEBSOCKET_TIMEOUT * 60 * 1000);
                 websocketClient.start();
                 ClientUpgradeRequest request = new ClientUpgradeRequest();
                 request.setHeader("Authorization", authField);
-                request.setTimeout(BRIDGE_WEBSOCKET_RECONNECT_DELAY, TimeUnit.SECONDS);
+                request.setTimeout(BRIDGE_WEBSOCKET_TIMEOUT, TimeUnit.MINUTES);
                 websocketClient.connect(socket, uri, request);
 
-                logger.debug("Websocket connection to SysAP is OK");
+                logger.debug("Websocket connection to SysAP is OK, timeout: {}", BRIDGE_WEBSOCKET_TIMEOUT);
 
                 ret = true;
             } else {
@@ -616,42 +685,51 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
 
     /**
      * Method to initialize the bridge
+     * 
+     * 
      */
     @Override
     public void initialize() {
-        httpConnectionOK.set(false);
 
-        // load configuration
-        FreeAtHomeBridgeHandlerConfiguration locConfig = getConfigAs(FreeAtHomeBridgeHandlerConfiguration.class);
+        scheduler.execute(() -> {
+            boolean thingReachable = true;
 
-        ipAddress = locConfig.ipaddress;
-        password = locConfig.password;
-        username = locConfig.username;
+            httpConnectionOK.set(false);
 
-        // build base URL
-        baseUrl = "http://" + ipAddress + "/fhapi/v1/api";
+            // load configuration
+            FreeAtHomeBridgeHandlerConfiguration locConfig = getConfigAs(FreeAtHomeBridgeHandlerConfiguration.class);
 
-        // Open Http connection
-        if (!openHttpConnection()) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-                    "@text/comm-error.http-wrongpass-or-ip");
+            ipAddress = locConfig.ipaddress;
+            password = locConfig.password;
+            username = locConfig.username;
 
-            logger.debug("Cannot open http connection");
+            // build base URL
+            baseUrl = "http://" + ipAddress + "/fhapi/v1/api";
 
-            return;
-        }
+            // Open Http connection
+            if (!openHttpConnection()) {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                        "@text/comm-error.http-wrongpass-or-ip");
 
-        // Open the websocket connection for immediate status updates
-        if (!openWebSocketConnection()) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-                    "@text/comm-error.not-able-open-websocketconnection");
+                logger.debug("Cannot open http connection");
 
-            logger.debug("Cannot open websocket connection");
+                thingReachable = false;
+            }
 
-            return;
-        }
+            // Open the websocket connection for immediate status updates
+            if (!openWebSocketConnection()) {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                        "@text/comm-error.not-able-open-websocketconnection");
 
-        updateStatus(ThingStatus.ONLINE);
+                logger.debug("Cannot open websocket connection");
+
+                thingReachable = false;
+            }
+
+            if (thingReachable) {
+                updateStatus(ThingStatus.ONLINE);
+            }
+        });
     }
 
     @Override
@@ -693,7 +771,10 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
                 while (!isInterrupted()) {
                     if (httpConnectionOK.get()) {
                         if (connectSession()) {
-                            socket.awaitEndCommunication();
+                            while (!socket.awaitEndCommunication(BRIDGE_WEBSOCKET_KEEPALIVE)) {
+                                logger.debug("Sending keep-alive message {}", System.currentTimeMillis());
+                                socket.getSession().getRemote().sendString("keep-alive");
+                            }
 
                             logger.debug("Socket connection closed");
 
@@ -707,6 +788,10 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler {
                 logger.debug("Thread interrupted [{}]", e.getMessage());
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
                         "@text/comm-error.general-websocket-issue");
+            } catch (IOException e) {
+                logger.debug("Keep-alive not succesfull [{}]", e.getMessage());
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
+                        "@text/comm-error.websocket-keep-alive-error");
             }
         }
 
