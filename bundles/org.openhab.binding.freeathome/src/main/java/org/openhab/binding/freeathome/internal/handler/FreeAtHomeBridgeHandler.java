@@ -96,6 +96,7 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler implements WebSoc
     private String ipAddress = "";
     private String username = "";
     private String password = "";
+    private boolean sendKeepAliveMessage = true;
 
     private String baseUrl = "";
 
@@ -533,13 +534,22 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler implements WebSoc
         try {
             // Start socket client
             if (localWebsocketClient != null) {
+
                 localWebsocketClient.setMaxTextMessageBufferSize(8 * 1024);
-                localWebsocketClient.setMaxIdleTimeout(BRIDGE_WEBSOCKET_TIMEOUT * 60 * 1000);
-                localWebsocketClient.setConnectTimeout(BRIDGE_WEBSOCKET_TIMEOUT * 60 * 1000);
+
+                if (this.sendKeepAliveMessage) {
+                    localWebsocketClient.setMaxIdleTimeout(BRIDGE_WEBSOCKET_TIMEOUT * 60 * 1000);
+                    localWebsocketClient.setConnectTimeout(BRIDGE_WEBSOCKET_TIMEOUT * 60 * 1000);
+                }
+
                 localWebsocketClient.start();
                 ClientUpgradeRequest request = new ClientUpgradeRequest();
                 request.setHeader("Authorization", authField);
-                request.setTimeout(BRIDGE_WEBSOCKET_TIMEOUT, TimeUnit.MINUTES);
+
+                if (this.sendKeepAliveMessage) {
+                    request.setTimeout(BRIDGE_WEBSOCKET_TIMEOUT, TimeUnit.MINUTES);
+                }
+
                 localWebsocketClient.connect(this, uri, request);
 
                 logger.debug("Websocket connection to SysAP is OK, timeout: {}", BRIDGE_WEBSOCKET_TIMEOUT);
@@ -653,6 +663,8 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler implements WebSoc
         // load configuration
         FreeAtHomeBridgeHandlerConfiguration locConfig = getConfigAs(FreeAtHomeBridgeHandlerConfiguration.class);
 
+        sendKeepAliveMessage = locConfig.sendKeepAliveMessage;
+
         ipAddress = locConfig.ipAddress;
         if (ipAddress.isBlank()) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
@@ -735,11 +747,13 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler implements WebSoc
                 while (!isInterrupted()) {
                     if (httpConnectionOK.get()) {
                         if (connectSession()) {
-                            while (isSocketConnectionAlive()) {
-                                TimeUnit.SECONDS.sleep(BRIDGE_WEBSOCKET_KEEPALIVE);
+                            if (sendKeepAliveMessage) {
+                                while (isSocketConnectionAlive()) {
+                                    TimeUnit.SECONDS.sleep(BRIDGE_WEBSOCKET_KEEPALIVE);
 
-                                logger.debug("Sending keep-alive message {}", System.currentTimeMillis());
-                                sendWebsocketKeepAliveMessage("keep-alive");
+                                    logger.debug("Sending keep-alive message {}", System.currentTimeMillis());
+                                    sendWebsocketKeepAliveMessage("keep-alive");
+                                }
                             }
                         }
                         logger.debug("Socket connection closed");
@@ -804,7 +818,7 @@ public class FreeAtHomeBridgeHandler extends BaseBridgeHandler implements WebSoc
 
     /**
      * Get socket alive state
-     * 
+     *
      * @throws InterruptedException
      */
     public boolean isSocketConnectionAlive() throws InterruptedException {
