@@ -12,7 +12,6 @@
  */
 package org.openhab.binding.freeathome.internal.datamodel;
 
-import static org.openhab.binding.freeathome.internal.datamodel.FreeAtHomeDatapoint.*;
 import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.*;
 
 import java.util.ArrayList;
@@ -296,6 +295,32 @@ public class FreeAtHomeDeviceChannel {
                 newDatapointGroup = new FreeAtHomeDatapointGroup();
                 newDatapointGroup.addDatapointToGroup(DatapointDirection.OUTPUT, 256, channelId, channelObject);
                 newDatapointGroup.addDatapointToGroup(DatapointDirection.INPUT, 1, channelId, channelObject);
+
+                AddDatapointGroup(newDatapointGroup);
+
+                break;
+            }
+            case FID_DIMMING_SENSOR_PUSHBUTTON_TYPE0:
+            case FID_DIMMING_SENSOR_PUSHBUTTON_TYPE1:
+            case FID_DIMMING_SENSOR_PUSHBUTTON_TYPE2:
+            case FID_DIMMING_SENSOR_PUSHBUTTON_TYPE3:
+            case FID_DIMMING_SENSOR_PUSHBUTTON_TYPE4:
+            case FID_DIMMING_SENSOR_PUSHBUTTON_TYPE5:
+            case FID_DIMMING_SENSOR_PUSHBUTTON_TYPE6:
+            case FID_DIMMING_SENSOR_PUSHBUTTON_TYPE7: {
+                this.channelId = channelId;
+
+                logger.debug("Dimming actuator channel - Channel FID: 0x{}", channelFunctionID);
+
+                FreeAtHomeDatapointGroup newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DatapointDirection.OUTPUT, 17, channelId, channelObject);
+                newDatapointGroup.addDatapointToGroup(DatapointDirection.INPUT, 272, channelId, channelObject);
+
+                AddDatapointGroup(newDatapointGroup);
+
+                newDatapointGroup = new FreeAtHomeDatapointGroup();
+                newDatapointGroup.addDatapointToGroup(DatapointDirection.OUTPUT, 1, channelId, channelObject);
+                newDatapointGroup.addDatapointToGroup(DatapointDirection.INPUT, 256, channelId, channelObject);
 
                 AddDatapointGroup(newDatapointGroup);
 
