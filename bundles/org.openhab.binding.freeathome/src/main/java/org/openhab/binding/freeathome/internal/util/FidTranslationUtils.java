@@ -222,7 +222,22 @@ public class FidTranslationUtils {
     public static final int FID_MOVEMENT_DETECTOR_TYPE0 = 0x1090; // Movement Detector
     public static final int FID_DIMMING_ACTUATOR_FLEX = 0x1810; // Switch actuator flex
     public static final int FID_DIMMING_ACTUATOR_TYPE0 = 0x1810; // Dim actuator
+    // Additional switch actuator types
+    public static final int FID_SWITCH_ACTUATOR_TYPE8 = 0x1808; // Switch actuator type 8
+    public static final int FID_SWITCH_ACTUATOR_TYPE9 = 0x1809; // Switch actuator type 9
+    public static final int FID_SWITCH_ACTUATOR_TYPE10 = 0x180A; // Switch actuator type 10
+    // Additional dimming actuator types (type0 already defined at 0x1810)
+    public static final int FID_DIMMING_ACTUATOR_TYPE1 = 0x1811; // Dim actuator type 1
+    public static final int FID_DIMMING_ACTUATOR_TYPE2 = 0x1812; // Dim actuator type 2
+    public static final int FID_DIMMING_ACTUATOR_TYPE8 = 0x1818; // Dim actuator type 8
+    public static final int FID_DIMMING_ACTUATOR_TYPE9 = 0x1819; // Dim actuator type 9
     public static final int FID_BLIND_ACTUATOR_WIRELESS = 0x1821; // Wireless blind actuator
+    public static final int FID_BLINDS_ACTUATOR_TYPE0 = 0x1820; // Blind actuator type 0
+    public static final int FID_BLINDS_ACTUATOR_TYPE1 = 0x1821; // Blind actuator type 1
+    public static final int FID_BLINDS_ACTUATOR_TYPE2 = 0x1822; // Blind actuator type 2
+    public static final int FID_BLINDS_ACTUATOR_TYPE3 = 0x1823; // Blind actuator type 3
+    public static final int FID_BLINDS_ACTUATOR_TYPE5 = 0x1825; // Blind actuator type 5
+    public static final int FID_BLINDS_ACTUATOR_TYPE8 = 0x1828; // Blind actuator type 8
     public static final int FID_SCENE_TRIGGER = 0x4800; // Scene trigger
     public static final int FID_RULE_SWITCH = 0x4A00; // Rule Switch
     public static final int FID_AIRQUALITYSENSOR_HUMIDITY = 0xB03F; // Air quality sensor humidity
@@ -418,7 +433,21 @@ public class FidTranslationUtils {
             Map.entry("0x1090", "fid-movement-detector"), // FID_MOVEMENT_DETECTOR_TYPE0
             Map.entry("0x1810", "fid-switch-actuator-flex"), // FID_DIMMING_ACTUATOR_FLEX
             Map.entry("0x1810", "fid-dim-actuator"), // FID_DIMMING_ACTUATOR_TYPE0
-            Map.entry("0x1821", "fid-wireless-blind-actuator"), // FID_BLIND_ACTUATOR_WIRELESS
+            // Switch actuator types
+            Map.entry("0x1808", "fid-switch-actuator-type8"), // FID_SWITCH_ACTUATOR_TYPE8
+            Map.entry("0x1809", "fid-switch-actuator-type9"), // FID_SWITCH_ACTUATOR_TYPE9
+            Map.entry("0x180A", "fid-switch-actuator-type10"), // FID_SWITCH_ACTUATOR_TYPE10
+            // Dimming actuator types
+            Map.entry("0x1811", "fid-dim-actuator-type1"), // FID_DIMMING_ACTUATOR_TYPE1
+            Map.entry("0x1812", "fid-dim-actuator-type2"), // FID_DIMMING_ACTUATOR_TYPE2
+            Map.entry("0x1818", "fid-dim-actuator-type8"), // FID_DIMMING_ACTUATOR_TYPE8
+            Map.entry("0x1819", "fid-dim-actuator-type9"), // FID_DIMMING_ACTUATOR_TYPE9
+            Map.entry("0x1820", "fid-blind-actuator"), // FID_BLIND_ACTUATOR_TYPE0
+            Map.entry("0x1821", "fid-blind-actuator"), // FID_BLIND_ACTUATOR_TYPE0
+            Map.entry("0x1822", "fid-blind-actuator"), // FID_BLIND_ACTUATOR_TYPE0
+            Map.entry("0x1823", "fid-blind-actuator"), // FID_BLIND_ACTUATOR_TYPE0
+            Map.entry("0x1825", "fid-blind-actuator"), // FID_BLIND_ACTUATOR_TYPE0
+            Map.entry("0x1828", "fid-blind-actuator"), // FID_BLIND_ACTUATOR_TYPE0
             Map.entry("0x4800", "fid-scene-trigger"), // FID_SCENE_TRIGGER
             Map.entry("0x4A00", "fid-rule-switch"), // FID_RULE_SWITCH
             Map.entry("0xB03F", "fid-air-quality-sensor-humidity"), // FID_AIRQUALITYSENSOR_HUMIDITY

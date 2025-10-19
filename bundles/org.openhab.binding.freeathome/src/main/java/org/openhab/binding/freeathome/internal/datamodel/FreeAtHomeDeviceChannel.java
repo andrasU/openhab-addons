@@ -12,8 +12,68 @@
  */
 package org.openhab.binding.freeathome.internal.datamodel;
 
-import static org.openhab.binding.freeathome.internal.datamodel.FreeAtHomeDatapoint.*;
-import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.*;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_AIRQUALITYSENSOR_CO;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_AIRQUALITYSENSOR_CO2;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_AIRQUALITYSENSOR_HUMIDITY;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_AIRQUALITYSENSOR_NO2;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_AIRQUALITYSENSOR_O3;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_AIRQUALITYSENSOR_PM10;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_AIRQUALITYSENSOR_PM25;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_AIRQUALITYSENSOR_PRESSURE;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_AIRQUALITYSENSOR_VOC;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_ATTIC_WINDOW_ACTUATOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_AWNING_ACTUATOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_BLINDS_ACTUATOR_TYPE0;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_BLINDS_ACTUATOR_TYPE1;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_BLINDS_ACTUATOR_TYPE2;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_BLINDS_ACTUATOR_TYPE3;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_BLINDS_ACTUATOR_TYPE5;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_BLINDS_ACTUATOR_TYPE8;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_BLIND_ACTUATOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_BLIND_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_BRIGHTNESS_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DES_DOOR_OPENER_ACTUATOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DES_DOOR_RINGING_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DES_LEVEL_CALL_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DES_LIGHT_SWITCH_ACTUATOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_ACTUATOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_ACTUATOR_FLEX;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_ACTUATOR_TYPE1;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_ACTUATOR_TYPE2;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_ACTUATOR_TYPE8;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_ACTUATOR_TYPE9;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_SENSOR_PUSHBUTTON_TYPE0;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_SENSOR_PUSHBUTTON_TYPE1;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_SENSOR_PUSHBUTTON_TYPE2;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_SENSOR_PUSHBUTTON_TYPE3;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_SENSOR_PUSHBUTTON_TYPE4;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_SENSOR_PUSHBUTTON_TYPE5;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_SENSOR_PUSHBUTTON_TYPE6;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_DIMMING_SENSOR_PUSHBUTTON_TYPE7;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_MOVEMENT_DETECTOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_MOVEMENT_DETECTOR_FLEX;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_PANEL_DIMMING_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_PANEL_SWITCH_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_RADIATOR_ACTUATOR_MASTER;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_RAIN_ALARM_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_RAIN_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_ROOM_TEMPERATURE_CONTROLLER_MASTER_WITHOUT_FAN;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_RULE_SWITCH;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_SCENE_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_SCENE_TRIGGER;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_SHUTTER_ACTUATOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_SWITCH_ACTUATOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_SWITCH_ACTUATOR_TYPE10;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_SWITCH_ACTUATOR_TYPE8;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_SWITCH_ACTUATOR_TYPE9;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_SWITCH_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_TEMPERATURE_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_TRIGGER;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_WINDOW_DOOR_POSITION_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_WINDOW_DOOR_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_WIND_ALARM_SENSOR;
+import static org.openhab.binding.freeathome.internal.util.FidTranslationUtils.FID_WIND_SENSOR;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +167,10 @@ public class FreeAtHomeDeviceChannel {
                 break;
             }
             case FID_TRIGGER:
-            case FID_SWITCH_ACTUATOR: {
+            case FID_SWITCH_ACTUATOR:
+            case FID_SWITCH_ACTUATOR_TYPE8:
+            case FID_SWITCH_ACTUATOR_TYPE9:
+            case FID_SWITCH_ACTUATOR_TYPE10: {
                 this.channelId = channelId;
 
                 logger.debug("Switch actuator channel created - Channel FID: 0x{}", channelFunctionID);
@@ -282,7 +345,11 @@ public class FreeAtHomeDeviceChannel {
                 break;
             }
             case FID_DIMMING_ACTUATOR_FLEX:
-            case FID_DIMMING_ACTUATOR: {
+            case FID_DIMMING_ACTUATOR:
+            case FID_DIMMING_ACTUATOR_TYPE1:
+            case FID_DIMMING_ACTUATOR_TYPE2:
+            case FID_DIMMING_ACTUATOR_TYPE8:
+            case FID_DIMMING_ACTUATOR_TYPE9: {
                 this.channelId = channelId;
 
                 logger.debug("Dimming actuator channel - Channel FID: 0x{}", channelFunctionID);
@@ -330,7 +397,12 @@ public class FreeAtHomeDeviceChannel {
             case FID_AWNING_ACTUATOR:
             case FID_ATTIC_WINDOW_ACTUATOR:
             case FID_BLIND_ACTUATOR:
-            case FID_BLIND_ACTUATOR_WIRELESS:
+            case FID_BLINDS_ACTUATOR_TYPE0:
+            case FID_BLINDS_ACTUATOR_TYPE1:
+            case FID_BLINDS_ACTUATOR_TYPE2:
+            case FID_BLINDS_ACTUATOR_TYPE3:
+            case FID_BLINDS_ACTUATOR_TYPE5:
+            case FID_BLINDS_ACTUATOR_TYPE8:
             case FID_SHUTTER_ACTUATOR: {
                 this.channelId = channelId;
 
