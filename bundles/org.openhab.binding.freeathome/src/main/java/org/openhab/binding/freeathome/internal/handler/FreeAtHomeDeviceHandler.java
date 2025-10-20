@@ -424,9 +424,12 @@ public class FreeAtHomeDeviceHandler extends BaseThingHandler implements FreeAtH
                                     dpg.getOpenHabCategory(), "type"),
                             dpg.getOpenHabItemType())
                     .withCategory(dpg.getOpenHabCategory()).withStateDescriptionFragment(stateFragment.build());
-
+            /*
+             * ChannelType channelType = channelTypeBuilder.isAdvanced(false)
+             * .withConfigDescriptionURI(configDescriptionUriChannel)
+             * .withDescription(String.format("Type for channel - %s ", dpg.getLabel())).build();
+             */
             ChannelType channelType = channelTypeBuilder.isAdvanced(false)
-                    .withConfigDescriptionURI(configDescriptionUriChannel)
                     .withDescription(String.format("Type for channel - %s ", dpg.getLabel())).build();
 
             channelTypeProvider.addChannelType(channelType);
